@@ -1,0 +1,198 @@
+CREATE TABLE Departments (
+    id_department SERIAL PRIMARY KEY,
+    department_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Employees (
+    id_employee SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255) NOT NULL,
+    salary DECIMAL(10, 2) NOT NULL CHECK (salary >= 12000),
+    city_empl VARCHAR(255) NOT NULL,
+    department_emp INT REFERENCES Departments(id_department),
+    email VARCHAR(255) CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,4}$' OR      email IS NULL)
+);
+
+CREATE TABLE Suppliers (
+    id_supplier SERIAL PRIMARY KEY,
+    supplier_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR(255)  CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}' AND email NOT LIKE '%@%'),
+    employee_contact INT REFERENCES Employees(id_employee)
+);
+
+CREATE TABLE Products (
+    id_product SERIAL PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    retail_price DECIMAL(12, 3) NOT NULL CHECK (retail_price > 0.001),
+    supplier INT REFERENCES Suppliers(id_supplier),
+    department INT REFERENCES Departments(id_department)
+);
+
+CREATE TABLE Orders (
+    id_order SERIAL PRIMARY KEY,
+    id_product INT REFERENCES Products(id_product),
+    order_date DATE NOT NULL CHECK (order_date >= '2010-01-01' AND order_date <= CURRENT_DATE),
+    quantity INT NOT NULL CHECK (quantity >= 1),
+    cost_price DECIMAL(12, 3) NOT NULL CHECK (cost_price >= 0.001)
+);
+
+INSERT INTO departments VALUES (1, 'Deportes', 'Planta 3 Norte'), (2, 'Hogar', 'Planta 4'), (3, 'Electrodomésticos', 'Planta baja'), (4, 'Informática', 'Planta 5'), (5, 'Moda femenina', 'Planta 1'), (6, 'Zapatería', 'Planta 1');
+
+
+INSERT INTO employees VALUES (32, 'Annabel Rodriguez', 13300, 'Igualada', 2, 'arodriguez@totmillor.com');
+INSERT INTO employees VALUES (196, 'Miriam Garcia', 14350.5 , 'Barcelona', 4, 'mgarcia@totmillor.com');
+INSERT INTO employees VALUES (186, 'Carlos Domenech', 18000.933, 'Sant Genis', 5, 'cdomenech@totmillor.com');
+INSERT INTO employees VALUES (1286, 'Rafael Verano', 27000.401, 'La Mallola', 5, 'rverano@totmillor.com');
+INSERT INTO employees VALUES (2113, 'Miquel Capdevall', 21325, 'Barcelona', 1, 'mcapdevall@totmillor.com');
+INSERT INTO employees VALUES (2941, 'Ramón Rambert', 12890.15 , 'La Panadella', 4, 'rrambert@totmillor.com');
+INSERT INTO employees VALUES (3402, 'Josep Vicenç Genaro', 14350.03, 'Cabra del Camp', 1, 'jvgenaro@totmillor.com');
+INSERT INTO employees VALUES (4528, 'Santiago Rosiñol', 16301, 'Jorba', 3, 'srosinyol@totmillor.com');
+INSERT INTO employees VALUES (5996, 'Juan Masdelomismo', 29098.34, 'Montmaneu', 2, 'jmasdelomismo@totmillor.com');
+INSERT INTO employees VALUES (7827, 'Jordi Puñol', 16401, 'Aguil', 3, 'jpunyol@totmillor.com');
+INSERT INTO employees VALUES (9214, 'Alberta Barrena', 18903.88, 'El Bruc', 5, 'abarrena@totmillor.com');
+INSERT INTO employees VALUES (10123, 'Ramón Ceniza', 17302.19, 'Esparraguera', 1, 'rceniza@totmillor.com');
+INSERT INTO employees VALUES (10150, 'José Matavacas', 18483.93, 'Igualada', 2, 'jmatavacas@totmillor.com');
+INSERT INTO employees VALUES (11391, 'Gilabert Pascual', 260312, 'La Mallola', 3, 'gpascual@totmillor.com');
+INSERT INTO employees VALUES (18301, 'Irda Loarca', 42783.49, 'Piera', 5, 'iloarca@totmillor.com');
+
+
+INSERT INTO suppliers VALUES (1, 'Electronic Import SA', 'Calle C. Pol Famades', 'Cornella', '9312341234', 'eimport@hotmail.com', 3402);
+INSERT INTO suppliers VALUES (2, 'Casa Cómoda, SL', 'Via Laietana, 34', 'Barcelona', '93321321', 'eugenio1968@gmail.com', 32);
+INSERT INTO suppliers VALUES (3, 'Sony Espanya, SA', 'Sabino de Arana, 42', 'Barcelona', '+3493987987', 'comandes@sony.es', 4528);
+INSERT INTO suppliers VALUES (4, 'HP Ibérica', 'Vicente Aleixandre, 1', 'Las Rozas', '93 765 567', 'info@hp-es.com', 196);
+INSERT INTO suppliers VALUES (5, 'Casa Mueble', 'c/ Ramon Llull, 14', 'Igualada', '93127845', 'casamueble@casamueble', 32);
+INSERT INTO suppliers VALUES (6, 'RollerBlade Spain', 'Icaria, 114', 'Barcelona', '93538574', 'spain@rollerblade.com', 2113);
+INSERT INTO suppliers VALUES (7, 'Salomon Snow', 'Avda. Nova, 43', 'Girona', '+34 973856439', 'info-spa@salomon.net', 2113); 
+INSERT INTO suppliers VALUES (8, 'Fagor Electro, SA', 'c/ del Coure, 15', 'Constantí', '977239876', 'blanca@fagor.es', 4528);
+
+
+INSERT INTO products VALUES (1, 'Fitness 90mm femme', 'Patí in-line fitness 38', 159.90, 6, 1);
+INSERT INTO products VALUES (2, 'Ski Carving 1000', 'Ski corto 1m', 189.99, 7, 1);
+INSERT INTO products VALUES (3, 'Casc Ski integral', 'Extrem endurance integral', 129.4, 7, 1);
+INSERT INTO products VALUES (4, 'Casc in-line City', 'Femme Superigual', 99.99, 6, 1);
+INSERT INTO products VALUES (5, 'Maraton 100-110 carbono', 'SuperPro Maraton 400gr', 690.90, 6, 1);
+INSERT INTO products VALUES (6, 'Placa inducció 2f', 'Inducción  4000w 2f negre', 419.40, 1, 3);
+INSERT INTO products VALUES (7, 'Nevera encastrable', 'Panelable 1,6m AAA', 493.23, 1, 3);
+INSERT INTO products VALUES (8, 'Lavavajillas white', 'Para columna 120"x60"', 580.90, 1, 3); 
+INSERT INTO products VALUES (9, 'Triturador Teka', 'Bajo fregadero eléctrico 4cv', 286.60, 1, 3);
+INSERT INTO products VALUES (10, 'Extractor no-noise', 'Doble motor alógeno', 360.99, 1, 3);
+INSERT INTO products VALUES (11, 'Lavadora-secadora 8kg AAA', 'DirectDrive 5 años garantía', 859.90, 1, 3);
+INSERT INTO products VALUES (12, 'Congelador 80cm', 'Para columna 80"x60"', 288.90, 1, 3);
+INSERT INTO products VALUES (13, 'Ordenador ARM 7"LED', 'Portátil Windows CE 4Gb', 119.99, 4, 4);
+INSERT INTO products VALUES (14, 'Impresora láser color', '20ppm duplex red', 324.20, 4, 4);
+INSERT INTO products VALUES (15, 'Plotter injección high speed', 'Cartucho prof. gran formato', 1387.40, 4, 4);
+INSERT INTO products VALUES (16, 'Ord. portátil eight-core', 'low volt. AMD 4.50Ghz LED 8h aut.', 399.99, 4, 4);
+INSERT INTO products VALUES (17, 'Hamaca dos puntos', 'Blanca trenzada sintética', 39.90, 2, 2);
+INSERT INTO products VALUES (18, 'Silla nido', 'Colfante basculante, pie 80Kg', 474.1, 2, 2);
+INSERT INTO products VALUES (19, 'Mesa bambú 6 personas', 'Centre vidrio oscuro, exterior', 639.99, 2, 2);
+INSERT INTO products VALUES (20, 'Silla bambú', 'Para exterior, no brazos', 126.6, 2, 2);
+INSERT INTO products VALUES (21, 'Taburete bambú', 'Para exterior, 40 cm', 79, 2, 2);
+
+
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (1, '2011-04-15', 2, 112.30);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (1, '2011-02-28', 2, 111.98);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (2, '2011-03-04', 3, 165.5);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (3, '2011-03-04', 2, 98.5);
+INSERT INTO orders (id_product, order_date, quantity, cost_price)VALUES (11, '2010-12-28', 1, 760);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (14, '2011-03-07', 2, 279.86);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (16, '2011-03-07', 1, 398.99);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (17, '2011-03-07', 15, 19.99);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (18, '2011-03-07', 1, 401.34);
+INSERT INTO orders (id_product, order_date, quantity, cost_price)VALUES (19, '2011-03-07', 1, 487.62);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (20, '2011-03-07', 6, 93.69);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (9, '2011-03-14', 1, 236.22);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (10, '2011-03-14', 1, 287.63);
+INSERT INTO orders (id_product, order_date, quantity, cost_price)VALUES (11, '2011-03-14', 1, 769.32);
+INSERT INTO orders (id_product, order_date, quantity, cost_price)VALUES (12, '2011-03-14', 2, 254.87);
+INSERT INTO orders (id_product, order_date, quantity, cost_price)VALUES (7, '2011-03-14', 2, 412.57);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (6, '2011-03-14', 1, 368);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (5, '2011-03-07', 1, 530.89);
+INSERT INTO orders (id_product, order_date, quantity, cost_price) VALUES (2, '2011-03-31', 1, 163.75);
+
+
+SELECT e.id_employee, e.employee_name
+FROM Employees e
+JOIN Departments d ON e.department_emp = d.id_department
+WHERE e.city_empl = 'Barcelona' AND d.department_name = 'Deportes';
+
+--------------------------------------------------------
+
+SELECT s.id_supplier, s.supplier_name
+FROM Suppliers s
+INNER JOIN Employees e ON s.employee_contact = e.id_employee
+INNER JOIN Products p ON s.id_supplier = p.supplier
+INNER JOIN Orders o ON p.id_product = o.id_product
+WHERE o.cost_price < 100 AND e.city_empl = 'Igualada';
+
+----------------------------------------------
+
+SELECT id_supplier, supplier_name
+FROM Suppliers
+WHERE id_supplier NOT IN (
+    SELECT DISTINCT supplier
+    FROM Products
+    WHERE id_product NOT IN (
+        SELECT DISTINCT id_product
+        FROM Orders
+    )
+);
+
+-------------------------------------------------
+
+WITH TopProducts AS (
+    SELECT
+        p.id_product,
+        p.product_name,
+        SUM(o.quantity) AS total_quantity,
+        s.supplier_name,
+        d.department_name,
+        SUM(o.quantity * (p.retail_price - o.cost_price)) AS profit
+    FROM
+        Orders o
+    JOIN Products p ON o.id_product = p.id_product
+    JOIN Suppliers s ON p.supplier = s.id_supplier
+    JOIN Departments d ON p.department = d.id_department
+    WHERE
+        o.order_date >= '2011-01-01' AND o.order_date <= '2011-03-31'
+    GROUP BY
+        p.id_product, p.product_name, s.supplier_name, d.department_name
+    ORDER BY
+        total_quantity DESC
+    LIMIT 3
+)
+
+
+SELECT
+    tp.id_product,
+    tp.product_name,
+    tp.total_quantity,
+    tp.supplier_name,
+    tp.department_name,
+    tp.profit
+FROM
+    TopProducts tp;
+
+---------------------------------------------------
+
+CREATE TABLE load_person (
+    id_person INT PRIMARY KEY,
+    person_name VARCHAR(255) NOT NULL
+);
+
+-- Inserta algunos datos ficticios
+INSERT INTO load_person VALUES (32, 'Annabel Rodriguez');
+INSERT INTO load_person VALUES (196, 'Miriam Garcia');
+INSERT INTO load_person VALUES (186, 'Carlos Domenech');
+-- Agrega más datos ficticios aquí
+
+----------------------------------------------------
+
+SELECT e.id_employee, e.employee_name
+FROM Employees e
+LEFT JOIN load_person lp ON e.id_employee = lp.id_person
+WHERE lp.id_person IS NULL;
+
